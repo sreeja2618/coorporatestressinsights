@@ -1,0 +1,157 @@
+/* Custom CSS for Corporate Stress Analysis Dashboard */
+
+/* Header styling */
+h1, h2, h3 {
+    color: #1E3A8A;
+    font-family: 'Helvetica Neue', sans-serif;
+}
+
+h1 {
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3B82F6;
+}
+
+h2 {
+    padding-top: 20px;
+    margin-top: 30px;
+}
+
+/* Metric cards styling */
+div.css-1r6slb0.e1tzin5v2 {
+    background-color: #F3F4F6;
+    border-radius: 10px;
+    padding: 15px 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Positive metric changes */
+.css-1l40rdr.e1inlk9u3 {
+    color: #10B981;
+}
+
+/* Negative metric changes */
+.css-17zmdiv.e1inlk9u3 {
+    color: #EF4444;
+}
+
+/* Info box styling */
+div.stinfo {
+    border-radius: 8px;
+    padding: 20px;
+    border-left: 4px solid #3B82F6;
+    background-color: #EFF6FF;
+}
+
+/* Warning box styling */
+div.stwarning {
+    border-radius: 8px;
+    padding: 20px;
+    border-left: 4px solid #F59E0B;
+    background-color: #FFFBEB;
+}
+
+/* Error box styling */
+div.sterror {
+    border-radius: 8px;
+    padding: 20px;
+    border-left: 4px solid #DC2626;
+    background-color: #FEF2F2;
+}
+
+/* Table styling */
+div.stDataFrame {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.dataframe th {
+    background-color: #EFF6FF;
+    color: #1E3A8A;
+    font-weight: 600;
+}
+
+.dataframe td {
+    background-color: white;
+}
+
+/* Sidebar styling */
+.css-1d391kg {
+    background-color: #F9FAFB;
+}
+
+/* Buttons styling */
+div.stButton > button {
+    background-color: #3B82F6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+div.stButton > button:hover {
+    background-color: #2563EB;
+}
+
+div.stButton > button:active {
+    background-color: #1D4ED8;
+}
+
+/* Slider styling */
+.stSlider > div {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+/* Selectbox styling */
+.stSelectbox > div[data-baseweb="select"] > div {
+    border-radius: 6px;
+}
+
+/* Text input styling */
+.stTextInput > div > div > input {
+    border-radius: 6px;
+}
+
+/* Multiselect styling */
+.stMultiSelect > div[data-baseweb="select"] > div {
+    border-radius: 6px;
+}
+
+/* Main content area padding */
+section.main > div {
+    padding-top: 20px;
+}
+
+/* Expander styling */
+.streamlit-expander {
+    border-radius: 6px;
+    border: 1px solid #E5E7EB;
+}
+
+.streamlit-expander > div:first-child {
+    background-color: #F9FAFB;
+}
+
+/* Plot background */
+.stPlot > div > div {
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #E5E7EB;
+}
+
+/* Caption text */
+.css-1a79pch.esravye1 {
+    font-style: italic;
+    color: #6B7280;
+}
+
+/* Custom divider */
+hr {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(59, 130, 246, 0.75), rgba(0, 0, 0, 0));
+}
