@@ -22,14 +22,50 @@ with open("assets/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Display the navbar
-create_navbar()
+current_page = create_navbar()
 
-# Title and introduction
-st.title("Corporate Stress Analysis Dashboard")
+# Hide default sidebar
 st.markdown("""
-    This interactive dashboard analyzes corporate stress levels based on multiple factors.
-    Navigate through different pages to explore demographics, stress factors, departmental analysis, and correlations.
-""")
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Conditional content based on the selected page
+if current_page == "Home":
+    # Title and introduction
+    st.title("Corporate Stress Analysis Dashboard")
+    st.markdown("""
+        This interactive dashboard analyzes corporate stress levels based on multiple factors.
+        Use the navigation bar above to explore demographics, stress factors, departmental analysis, and correlations.
+    """)
+elif current_page == "Demographics":
+    # Import and run Demographics page
+    import pages.demographics as demographics
+    demographics.show()
+    st.stop()
+elif current_page == "Stress Factors":
+    # Import and run Stress Factors page
+    import pages.stress_factors as stress_factors
+    stress_factors.show()
+    st.stop()
+elif current_page == "Departments":
+    # Import and run Departments page
+    import pages.departments as departments
+    departments.show()
+    st.stop()
+elif current_page == "Correlations":
+    # Import and run Correlations page
+    import pages.correlations as correlations
+    correlations.show()
+    st.stop()
+elif current_page == "Predictions":
+    # Import and run Predictions page
+    import pages.predictions as predictions
+    predictions.show()
+    st.stop()
 
 # Data loading section
 st.header("Data Overview")
