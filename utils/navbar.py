@@ -45,8 +45,21 @@ def create_navbar():
     }
     
     # Get current page
-    script_path = st.runtime.scriptrunner.get_script_run_ctx().info.script_path
-    current_page = os.path.basename(script_path) if script_path else ""
+    try:
+        # Get the script path from the session state
+        current_file = os.path.basename(__file__)
+        if current_file == "navbar.py":
+            # We're in the navbar module, get the caller's path
+            import inspect
+            caller_frame = inspect.currentframe().f_back
+            caller_file = os.path.basename(caller_frame.f_code.co_filename)
+            current_page = caller_file
+        else:
+            # Fallback to this file
+            current_page = current_file
+    except:
+        # If all else fails, assume we're on the main page
+        current_page = "main.py"
     
     # Build HTML for navbar
     navbar_html = '<div class="navbar">'

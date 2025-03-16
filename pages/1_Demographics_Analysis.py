@@ -4,6 +4,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from utils.data_processing import load_data, preprocess_data
+from utils.navbar import create_navbar
 
 # Set page configuration
 st.set_page_config(
@@ -15,6 +16,9 @@ st.set_page_config(
 # Apply custom CSS
 with open("assets/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Display the navbar
+create_navbar()
 
 # Title
 st.title("Demographics Analysis")
