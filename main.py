@@ -199,9 +199,9 @@ if df is not None:
                     options=["All"] + sorted(df['Marital_Status'].unique().tolist())
                 )
                 
-                education = st.selectbox(
-                    "Education Level",
-                    options=["All"] + sorted(df['Education'].unique().tolist())
+                job_role = st.selectbox(
+                    "Job Role",
+                    options=["All"] + sorted(df['Job_Role'].unique().tolist())
                 )
         
         with filter_tabs[1]:  # Work Environment filters
@@ -275,8 +275,8 @@ if df is not None:
         filtered_df = filtered_df[filtered_df['Gender'] == selected_gender]
     if marital_status != "All":
         filtered_df = filtered_df[filtered_df['Marital_Status'] == marital_status]
-    if education != "All":
-        filtered_df = filtered_df[filtered_df['Education'] == education]
+    if job_role != "All":
+        filtered_df = filtered_df[filtered_df['Job_Role'] == job_role]
     
     # Apply age and experience filters
     filtered_df = filtered_df[
