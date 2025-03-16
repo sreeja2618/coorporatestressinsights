@@ -63,8 +63,13 @@ def show():
         )
     
     # Create scatter plot
+    # Check if there are any duplicated columns before creating the plot
+    # This avoids the DuplicateError issue
+    columns_to_use = list(set([x_factor, y_factor, 'Department', 'Age', 'Gender', 'Job_Role']))
+    df_no_dups = df[columns_to_use].copy()
+    
     fig = px.scatter(
-        df,
+        df_no_dups,
         x=x_factor,
         y=y_factor,
         color='Department',

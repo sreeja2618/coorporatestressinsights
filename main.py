@@ -158,33 +158,35 @@ if df is not None:
         fig.update_layout(xaxis_title="Correlation", yaxis_title="Factor", height=400)
         st.plotly_chart(fig, use_container_width=True)
     
-    # Quick filters for exploration
+    # Quick filters for exploration using horizontal layout with expander 
     st.header("Quick Data Explorer")
     
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        selected_dept = st.selectbox(
-            "Select Department",
-            options=["All"] + sorted(df['Department'].unique().tolist())
-        )
-    
-    with col2:
-        selected_gender = st.selectbox(
-            "Select Gender",
-            options=["All"] + sorted(df['Gender'].unique().tolist())
-        )
-    
-    with col3:
-        selected_factor = st.selectbox(
-            "Select Factor to Analyze",
-            options=[
-                "Age", "Experience_Years", "Monthly_Salary_INR", 
-                "Working_Hours_per_Week", "Sleep_Hours",
-                "Manager_Support_Level", "Work_Pressure_Level",
-                "Work_Life_Balance", "Job_Satisfaction"
-            ]
-        )
+    with st.expander("Expand to set filters", expanded=True):
+        filter_container = st.container()
+        col1, col2, col3 = filter_container.columns(3)
+        
+        with col1:
+            selected_dept = st.selectbox(
+                "Select Department",
+                options=["All"] + sorted(df['Department'].unique().tolist())
+            )
+        
+        with col2:
+            selected_gender = st.selectbox(
+                "Select Gender",
+                options=["All"] + sorted(df['Gender'].unique().tolist())
+            )
+        
+        with col3:
+            selected_factor = st.selectbox(
+                "Select Factor to Analyze",
+                options=[
+                    "Age", "Experience_Years", "Monthly_Salary_INR", 
+                    "Working_Hours_per_Week", "Sleep_Hours",
+                    "Manager_Support_Level", "Work_Pressure_Level",
+                    "Work_Life_Balance", "Job_Satisfaction"
+                ]
+            )
     
     # Filter data based on selections
     filtered_df = df.copy()
