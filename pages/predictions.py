@@ -340,13 +340,15 @@ def show():
                 font-weight: 600;
                 margin-bottom: 10px;
             }
-            </style>
+            </style>""", unsafe_allow_html=True)
+        
+        st.markdown(f"""
             <div class="prediction-box" style="background-color: {color}20; border: 2px solid {color};">
                 <p>Predicted Stress Level</p>
                 <div class="prediction-value" style="color: {color};">{prediction:.2f}/10</div>
                 <div class="prediction-category" style="color: {color};">{category}</div>
             </div>
-        """.format(color=color, prediction=prediction, category=category), unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
         # Recommendations based on prediction
         st.subheader("Recommendations")
