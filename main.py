@@ -7,18 +7,22 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from utils.data_processing import load_data, preprocess_data, calculate_stress_metrics
 from utils.visualization import create_stress_distribution, create_stress_by_factor_chart
+from utils.navbar import create_navbar
 
 # Set page configuration
 st.set_page_config(
     page_title="Corporate Stress Analysis Dashboard",
     page_icon="📊",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # Apply custom CSS
 with open("assets/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Display the navbar
+create_navbar()
 
 # Title and introduction
 st.title("Corporate Stress Analysis Dashboard")
@@ -161,6 +165,6 @@ if df is not None:
         st.warning("No data available for the selected filters.")
     
     # Call to action for detailed analysis
-    st.info("👈 Navigate to the different analysis pages from the sidebar for more detailed insights.")
+    st.info("⬆️ Navigate to the different analysis pages from the navigation bar above for more detailed insights.")
 else:
     st.error("Failed to load data. Please check your dataset file.")
