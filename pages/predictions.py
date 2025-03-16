@@ -346,6 +346,7 @@ def show():
                 <div class="prediction-value" style="color: {color};">{prediction:.2f}/10</div>
                 <div class="prediction-category" style="color: {color};">{category}</div>
             </div>
+        """.format(color=color, prediction=prediction, category=category)
         """, unsafe_allow_html=True)
 
         # Recommendations based on prediction
