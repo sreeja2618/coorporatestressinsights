@@ -6,31 +6,21 @@ import plotly.graph_objects as go
 import seaborn as sns
 import matplotlib.pyplot as plt
 from utils.data_processing import load_data, preprocess_data
-
-# Set page configuration
 st.set_page_config(
     page_title="Correlation Analysis - Corporate Stress Dashboard",
     page_icon="🔄",
     layout="wide"
 )
-
-# Apply custom CSS
 with open("assets/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-# Title
 st.title("Correlation Analysis")
 st.markdown("Explore relationships between different variables and their impact on stress levels.")
-
-# Load data
 try:
     df = load_data("attached_assets/corporate_stress_dataset.csv")
     df = preprocess_data(df)
 except Exception as e:
     st.error(f"Error loading data: {e}")
     st.stop()
-
-# Select numerical columns for correlation analysis
 numerical_cols = [
     'Age', 'Experience_Years', 'Monthly_Salary_INR', 'Working_Hours_per_Week',
     'Commute_Time_Hours', 'Stress_Level', 'Sleep_Hours', 'Physical_Activity_Hours_per_Week',
@@ -38,29 +28,15 @@ numerical_cols = [
     'Work_Life_Balance', 'Family_Support_Level', 'Job_Satisfaction',
     'Performance_Rating', 'Team_Size'
 ]
-
-# Sidebar filters
 st.sidebar.header("Analysis Options")
-
-# Department filter
 department_options = ["All"] + sorted(df["Department"].unique().tolist())
 selected_department = st.sidebar.selectbox("Department", department_options)
-
-# Apply filters
 filtered_df = df.copy()
 if selected_department != "All":
     filtered_df = filtered_df[filtered_df['Department'] == selected_department]
-
-# Display filtered data info
 st.markdown(f"### Analyzing correlations across {len(filtered_df)} employee records")
-
-# Correlation Matrix
 st.header("Correlation Matrix")
-
-# Generate correlation matrix
 corr_df = filtered_df[numerical_cols].corr()
-
-# Plot heatmap with Plotly
 fig = px.imshow(
     corr_df,
     text_auto='.2f',
@@ -70,8 +46,6 @@ fig = px.imshow(
 )
 fig.update_layout(height=700)
 st.plotly_chart(fig, use_container_width=True)
-
-# Select variables for scatter plot
 st.header("Relationship Explorer")
 col1, col2 = st.columns(2)
 
@@ -80,15 +54,11 @@ with col1:
 
 with col2:
     y_var = st.selectbox("Select Y-axis variable", options=numerical_cols, index=numerical_cols.index('Stress_Level'))
-
-# Color by options
 color_var = st.selectbox(
     "Color by",
     options=["Stress_Level", "Department", "Gender", "Job_Role", "Remote_Work"],
     index=0
 )
-
-# Create scatter plot
 fig = px.scatter(
     filtered_df,
     x=x_var,
@@ -99,18 +69,12 @@ fig = px.scatter(
     hover_data=["ID", "Job_Role", "Department"],
     title=f"Relationship between {x_var} and {y_var}"
 )
-
-# Add trendline
 if color_var == "Stress_Level" or color_var == "Remote_Work":
     fig.update_traces(marker=dict(size=10))
-    
-    # Compute trendline
     x = filtered_df[x_var]
     y = filtered_df[y_var]
     z = np.polyfit(x, y, 1)
     p = np.poly1d(z)
-    
-    # Add trendline to figure
     fig.add_trace(go.Scatter(
         x=sorted(x),
         y=p(sorted(x)),
@@ -121,12 +85,8 @@ if color_var == "Stress_Level" or color_var == "Remote_Work":
 
 fig.update_layout(height=600)
 st.plotly_chart(fig, use_container_width=True)
-
-# Correlation statistics
 corr_value = filtered_df[x_var].corr(filtered_df[y_var])
 st.markdown(f"**Correlation coefficient between {x_var} and {y_var}:** {corr_value:.4f}")
-
-# Classification of correlation strength
 if abs(corr_value) < 0.3:
     strength = "weak"
     color = "blue"
@@ -139,18 +99,12 @@ else:
 
 direction = "positive" if corr_value > 0 else "negative"
 st.markdown(f"This indicates a <span style='color:{color}'>{strength} {direction}</span> correlation.", unsafe_allow_html=True)
-
-# Multi-variable relationships
 st.header("Multi-variable Relationships")
-
-# Select third variable for analysis (facet)
 facet_var = st.selectbox(
     "Facet by (categorize)",
     options=["Department", "Gender", "Job_Role", "Company_Size", "Remote_Work", "Health_Issues", "Burnout_Symptoms"],
     index=0
 )
-
-# Create faceted scatter plot
 fig = px.scatter(
     filtered_df,
     x=x_var,
@@ -161,23 +115,14 @@ fig = px.scatter(
     opacity=0.7,
     title=f"Relationship between {x_var} and {y_var} by {facet_var}"
 )
-
-# Set facet styles
-if filtered_df[facet_var].nunique() <= 8:  # Only facet if there aren't too many categories
+if filtered_df[facet_var].nunique() <= 8:  
     fig.update_layout(height=max(600, filtered_df[facet_var].nunique() * 200))
     st.plotly_chart(fig, use_container_width=True)
 else:
     st.warning(f"Too many categories in {facet_var} for faceting. Please choose a variable with fewer categories.")
-
-# Multi-correlation focus
 st.header("Stress Level Correlations")
-
-# Calculate correlations with Stress_Level
 stress_corr = filtered_df[numerical_cols].corr()['Stress_Level'].sort_values(ascending=False)
-# Remove the stress level itself from the list
 stress_corr = stress_corr.drop('Stress_Level')
-
-# Top positive and negative correlations
 top_pos = stress_corr.head(6)
 top_neg = stress_corr.tail(6).sort_values()
 
@@ -208,31 +153,19 @@ with col2:
     )
     fig.update_layout(xaxis_title="Correlation", yaxis_title="Factor", height=400)
     st.plotly_chart(fig, use_container_width=True)
-
-# Correlation pairs
 st.header("Top Correlated Pairs")
-
-# Get absolute correlations and set self-correlations to zero
 corr_abs = filtered_df[numerical_cols].corr().abs()
 np.fill_diagonal(corr_abs.values, 0)
-
-# Get top 10 highly correlated pairs
 corr_pairs = []
 for i in range(len(corr_abs.columns)):
     for j in range(i):
         corr_pairs.append((corr_abs.columns[i], corr_abs.columns[j], corr_abs.iloc[i, j]))
-
-# Sort by correlation value
 corr_pairs.sort(key=lambda x: x[2], reverse=True)
-
-# Show the top pairs
 st.subheader("Highly Correlated Variable Pairs")
 top_pairs_df = pd.DataFrame(corr_pairs[:10], columns=['Variable 1', 'Variable 2', 'Correlation'])
 top_pairs_df['Correlation'] = top_pairs_df['Correlation'].round(4)
 
 st.dataframe(top_pairs_df, use_container_width=True)
-
-# Select a pair to visualize
 if st.button("Visualize Top Correlation Pair"):
     top_var1, top_var2, _ = corr_pairs[0]
     
@@ -244,14 +177,10 @@ if st.button("Visualize Top Correlation Pair"):
         opacity=0.7,
         title=f"Relationship between {top_var1} and {top_var2}"
     )
-    
-    # Compute trendline
     x = filtered_df[top_var1]
     y = filtered_df[top_var2]
     z = np.polyfit(x, y, 1)
     p = np.poly1d(z)
-    
-    # Add trendline to figure
     fig.add_trace(go.Scatter(
         x=sorted(x),
         y=p(sorted(x)),
@@ -262,8 +191,6 @@ if st.button("Visualize Top Correlation Pair"):
     
     fig.update_layout(height=600)
     st.plotly_chart(fig, use_container_width=True)
-
-# Download correlation data
 st.sidebar.header("Export Data")
 corr_csv = corr_df.to_csv()
 st.sidebar.download_button(

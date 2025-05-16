@@ -10,32 +10,23 @@ from utils.navbar import create_navbar
 
 def show():
     """Display the correlation analysis page content"""
-    # Apply custom CSS
     with open("assets/style.css") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     
-    # Title
+    
     st.title("Correlation Analysis")
     st.markdown("Explore relationships between different factors and their impact on stress levels.")
     
-    # Load data
+   
     try:
         df = load_data("attached_assets/corporate_stress_dataset.csv")
         df = preprocess_data(df)
     except Exception as e:
         st.error(f"Error loading data: {e}")
         st.stop()
-    
-    # Correlation matrix
     st.header("Correlation Matrix")
-    
-    # Get numerical columns for correlation
     numerical_cols = df.select_dtypes(include=[np.number]).columns.tolist()
-    
-    # Create correlation matrix
     corr_matrix = df[numerical_cols].corr()
-    
-    # Generate heatmap
     fig, ax = plt.subplots(figsize=(12, 10))
     sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0, fmt='.2f', ax=ax)
     plt.title('Correlation Matrix of Numerical Factors')
@@ -43,7 +34,6 @@ def show():
     
     st.pyplot(fig)
     
-    # Factor selection for scatter plots
     st.header("Factor Relationship Explorer")
     
     col1, col2 = st.columns(2)
@@ -61,10 +51,6 @@ def show():
             options=numerical_cols,
             index=numerical_cols.index("Stress_Level") if "Stress_Level" in numerical_cols else 0
         )
-    
-    # Create scatter plot
-    # Check if there are any duplicated columns before creating the plot
-    # This avoids the DuplicateError issue
     columns_to_use = list(set([x_factor, y_factor, 'Department', 'Age', 'Gender', 'Job_Role']))
     df_no_dups = df[columns_to_use].copy()
     

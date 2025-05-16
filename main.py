@@ -8,23 +8,19 @@ import seaborn as sns
 from utils.data_processing import load_data, preprocess_data, calculate_stress_metrics
 from utils.visualization import create_stress_distribution, create_stress_by_factor_chart
 from utils.navbar import create_navbar
-
-# Set page configuration
 st.set_page_config(
-    page_title="Corporate Stress Analysis Dashboard",
+    page_title="Worklife Insights Hub Dashboard",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# Apply custom CSS
+
 with open("assets/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Display the navbar
-current_page = create_navbar()
 
-# Hide default sidebar
+current_page = create_navbar()
 st.markdown("""
 <style>
     [data-testid="collapsedControl"] {
@@ -32,59 +28,42 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
-
-# Conditional content based on the selected page
 if current_page == "Home":
-    # Title and introduction
-    st.title("Corporate Stress Analysis Dashboard")
+    st.title("Worklife Insights Hub")
+    
     st.markdown("""
         This interactive dashboard analyzes corporate stress levels based on multiple factors.
         Use the navigation bar above to explore demographics, stress factors, departmental analysis, and correlations.
     """)
 elif current_page == "Demographics":
-    # Import and run Demographics page
     import pages.demographics as demographics
     demographics.show()
     st.stop()
 elif current_page == "Stress Factors":
-    # Import and run Stress Factors page
     import pages.stress_factors as stress_factors
     stress_factors.show()
     st.stop()
 elif current_page == "Departments":
-    # Import and run Departments page
     import pages.departments as departments
     departments.show()
     st.stop()
 elif current_page == "Correlations":
-    # Import and run Correlations page
     import pages.correlations as correlations
     correlations.show()
     st.stop()
 elif current_page == "Predictions":
-    # Import and run Predictions page
     import pages.predictions as predictions
     predictions.show()
     st.stop()
-
-# Data loading section
 st.header("Data Overview")
-
-# Data upload option
 uploaded_file = st.file_uploader("Upload your corporate stress dataset (CSV)", type="csv")
-
-# Load data
 if uploaded_file is not None:
     df = load_data(uploaded_file)
 else:
-    # Use the provided dataset
     df = load_data("attached_assets/corporate_stress_dataset.csv")
 
 if df is not None:
-    # Preprocess data
     df = preprocess_data(df)
-    
-    # Display data overview
     col1, col2 = st.columns(2)
     
     with col1:
@@ -96,11 +75,9 @@ if df is not None:
         st.write(f"Total Records: {df.shape[0]}")
         st.write(f"Features: {df.shape[1]}")
         
-        # Missing values if any
+        
         missing_values = df.isnull().sum().sum()
         st.write(f"Missing Values: {missing_values}")
-    
-    # Key Metrics
     st.header("Key Stress Metrics")
     metrics = calculate_stress_metrics(df)
     
@@ -109,24 +86,13 @@ if df is not None:
     col2.metric("High Stress Percentage", f"{metrics['high_stress_percentage']:.1f}%")
     col3.metric("Low Stress Percentage", f"{metrics['low_stress_percentage']:.1f}%")
     col4.metric("Burnout Symptoms", f"{metrics['burnout_percentage']:.1f}%")
-    
-    # Stress distribution visualization
     st.subheader("Stress Level Distribution")
     fig = create_stress_distribution(df)
     st.plotly_chart(fig, use_container_width=True)
-    
-    # Top stress factors
     st.subheader("Top Factors Correlated with Stress")
-    
-    # Get only numerical columns for correlation
     numerical_cols = df.select_dtypes(include=[np.number]).columns.tolist()
-    
-    # Calculate correlations with Stress_Level
     stress_corr = df[numerical_cols].corr()['Stress_Level'].sort_values(ascending=False)
-    # Remove the stress level itself from the list
     stress_corr = stress_corr.drop('Stress_Level')
-    
-    # Get top 5 positive and negative correlations
     top_pos = stress_corr.head(5)
     top_neg = stress_corr.tail(5)
     
@@ -157,15 +123,12 @@ if df is not None:
         )
         fig.update_layout(xaxis_title="Correlation", yaxis_title="Factor", height=400)
         st.plotly_chart(fig, use_container_width=True)
-    
-    # Advanced Data Explorer with enhanced filters
     st.header("Interactive Data Explorer")
     
     with st.expander("Configure Visualization Parameters", expanded=True):
-        # Tabs for different filter categories
         filter_tabs = st.tabs(["Demographics", "Work Environment", "Visualization"])
         
-        with filter_tabs[0]:  # Demographics filters
+        with filter_tabs[0]:  
             col1, col2 = st.columns(2)
             
             with col1:
@@ -204,7 +167,7 @@ if df is not None:
                     options=["All"] + sorted(df['Job_Role'].unique().tolist())
                 )
         
-        with filter_tabs[1]:  # Work Environment filters
+        with filter_tabs[1]: 
             col1, col2 = st.columns(2)
             
             with col1:
@@ -237,7 +200,7 @@ if df is not None:
                     value=(int(df['Job_Satisfaction'].min()), int(df['Job_Satisfaction'].max()))
                 )
         
-        with filter_tabs[2]:  # Visualization options
+        with filter_tabs[2]:  
             col1, col2 = st.columns(2)
             
             with col1:
@@ -264,11 +227,7 @@ if df is not None:
                 )
                 
                 trend_line = st.checkbox("Show Trend Line", value=True)
-    
-    # Filter data based on selections
     filtered_df = df.copy()
-    
-    # Apply demographic filters
     if selected_dept != "All":
         filtered_df = filtered_df[filtered_df['Department'] == selected_dept]
     if selected_gender != "All":
@@ -277,16 +236,12 @@ if df is not None:
         filtered_df = filtered_df[filtered_df['Marital_Status'] == marital_status]
     if job_role != "All":
         filtered_df = filtered_df[filtered_df['Job_Role'] == job_role]
-    
-    # Apply age and experience filters
     filtered_df = filtered_df[
         (filtered_df['Age'] >= age_range[0]) & 
         (filtered_df['Age'] <= age_range[1]) &
         (filtered_df['Experience_Years'] >= experience_range[0]) & 
         (filtered_df['Experience_Years'] <= experience_range[1])
     ]
-    
-    # Apply work environment filters
     filtered_df = filtered_df[
         (filtered_df['Working_Hours_per_Week'] >= work_hours_range[0]) & 
         (filtered_df['Working_Hours_per_Week'] <= work_hours_range[1]) &
@@ -297,15 +252,11 @@ if df is not None:
         (filtered_df['Job_Satisfaction'] >= job_satisfaction_range[0]) & 
         (filtered_df['Job_Satisfaction'] <= job_satisfaction_range[1])
     ]
-    
-    # Display filtered data summary
     col1, col2 = st.columns(2)
     with col1:
         st.caption(f"**Filtered Dataset: {len(filtered_df)} records**")
     with col2:
         st.caption(f"**Average Stress Level: {filtered_df['Stress_Level'].mean():.2f}/10**")
-    
-    # Create chart based on selections and filtered data
     if not filtered_df.empty:
         if chart_type == "Scatter":
             fig = px.scatter(
@@ -320,9 +271,8 @@ if df is not None:
                 trendline="ols" if trend_line else None
             )
         elif chart_type == "Box":
-            # For box plots, we need to bin numerical data if selected
             if selected_factor in ["Age", "Experience_Years", "Monthly_Salary_INR", "Working_Hours_per_Week", "Sleep_Hours"]:
-                # Create bins for numerical data
+                
                 if selected_factor == "Age":
                     filtered_df["Binned"] = pd.cut(filtered_df[selected_factor], bins=[20, 30, 40, 50, 60], labels=["20-30", "31-40", "41-50", "51-60"])
                 elif selected_factor == "Experience_Years":
@@ -351,7 +301,7 @@ if df is not None:
                 )
         elif chart_type == "Violin":
             if selected_factor in ["Age", "Experience_Years", "Monthly_Salary_INR", "Working_Hours_per_Week", "Sleep_Hours"]:
-                # Create bins for numerical data
+                
                 if selected_factor == "Age":
                     filtered_df["Binned"] = pd.cut(filtered_df[selected_factor], bins=[20, 30, 40, 50, 60], labels=["20-30", "31-40", "41-50", "51-60"])
                 elif selected_factor == "Experience_Years":
@@ -378,9 +328,9 @@ if df is not None:
                     title=f"Stress Level Distribution by {selected_factor}",
                     color_discrete_sequence=px.colors.sequential.Viridis
                 )
-        else:  # Bar chart
+        else:  
             if selected_factor in ["Age", "Experience_Years", "Monthly_Salary_INR", "Working_Hours_per_Week", "Sleep_Hours"]:
-                # Create bins for numerical data
+                
                 if selected_factor == "Age":
                     filtered_df["Binned"] = pd.cut(filtered_df[selected_factor], bins=[20, 30, 40, 50, 60], labels=["20-30", "31-40", "41-50", "51-60"])
                 elif selected_factor == "Experience_Years":
@@ -410,7 +360,7 @@ if df is not None:
                     color_continuous_scale=color_scale
                 )
         
-        # Update layout
+        
         fig.update_layout(
             xaxis_title=selected_factor.replace('_', ' '),
             yaxis_title="Stress Level",
@@ -420,11 +370,10 @@ if df is not None:
         
         st.plotly_chart(fig, use_container_width=True)
         
-        # Add a sample data view
         with st.expander("View Sample of Filtered Data", expanded=False):
             st.dataframe(filtered_df.head(10), use_container_width=True)
             
-            # Add download button for filtered data
+            
             csv = filtered_df.to_csv(index=False).encode('utf-8')
             st.download_button(
                 label="Download Filtered Data as CSV",
@@ -434,8 +383,6 @@ if df is not None:
             )
     else:
         st.warning("No data available for the selected filters. Please adjust your filter criteria.")
-    
-    # Call to action for detailed analysis
     st.info("⬆️ Navigate to the different analysis pages from the navigation bar above for more detailed insights.")
 else:
     st.error("Failed to load data. Please check your dataset file.")

@@ -33,29 +33,16 @@ def create_navbar():
     </style>
     """
     st.markdown(navbar_css, unsafe_allow_html=True)
-    
-    # Use columns to create a horizontal layout for navigation buttons
     cols = st.columns(6)
-    
-    # Define page names
     page_names = ["Home", "Demographics", "Stress Factors", "Departments", "Correlations", "Predictions"]
-    
-    # Get current page
     if 'page' not in st.session_state:
         st.session_state.page = "Home"
-    
-    # Create a button for each page
     for i, page_name in enumerate(page_names):
         with cols[i]:
-            # Check if this is the active page
             is_active = st.session_state.page == page_name
-            
-            # Create a clickable button that will change page
             if st.button(page_name, key=f"nav_{page_name}", 
                         use_container_width=True,
                         type="primary" if is_active else "secondary"):
                 st.session_state.page = page_name
                 st.rerun()
-    
-    # Return the current page name for conditional content rendering
     return st.session_state.page

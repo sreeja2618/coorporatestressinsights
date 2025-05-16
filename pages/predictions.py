@@ -5,7 +5,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import roc_curve, auc, confusion_matrix
 from utils.data_processing import load_data, preprocess_data
 from utils.navbar import create_navbar
 
@@ -226,6 +229,109 @@ def show():
             )
 
             st.plotly_chart(fig, use_container_width=True)
+        
+        # Add ROC curve analysis section
+        st.markdown("### ROC Curve Analysis")
+        st.markdown("""
+            The ROC (Receiver Operating Characteristic) curve is a graphical visualization used to assess 
+            the performance of a binary classification model by plotting the true positive rate against 
+            the false positive rate at various threshold settings.
+        """)
+        
+        # Create binary classification data for ROC curve
+        # Convert stress level to binary target for ROC curve (high stress vs not)
+        stress_threshold = st.slider(
+            "Stress Threshold for Binary Classification",
+            min_value=1.0,
+            max_value=10.0,
+            value=7.0,
+            step=0.5,
+            help="Stress levels above this threshold are considered 'high stress'"
+        )
+        
+        # Create binary target
+        y_binary = (df['Stress_Level'] >= stress_threshold).astype(int)
+        
+        # Train binary classification models
+        X_binary = df[selected_features]
+        X_train_bin, X_test_bin, y_train_bin, y_test_bin = train_test_split(
+            X_binary, y_binary, test_size=test_size, random_state=42
+        )
+        
+        # Train three different classification models
+        rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+        lr_classifier = LogisticRegression(random_state=42)
+        gb_classifier = GradientBoostingClassifier(n_estimators=100, random_state=42)
+        
+        # Fit the models
+        rf_classifier.fit(X_train_bin, y_train_bin)
+        lr_classifier.fit(X_train_bin, y_train_bin)
+        gb_classifier.fit(X_train_bin, y_train_bin)
+        
+        # Get probabilities for positive class
+        rf_probs = rf_classifier.predict_proba(X_test_bin)[:, 1]
+        lr_probs = lr_classifier.predict_proba(X_test_bin)[:, 1]
+        gb_probs = gb_classifier.predict_proba(X_test_bin)[:, 1]
+        
+        # Compute ROC curve and area under the curve
+        rf_fpr, rf_tpr, _ = roc_curve(y_test_bin, rf_probs)
+        lr_fpr, lr_tpr, _ = roc_curve(y_test_bin, lr_probs)
+        gb_fpr, gb_tpr, _ = roc_curve(y_test_bin, gb_probs)
+        
+        rf_auc = auc(rf_fpr, rf_tpr)
+        lr_auc = auc(lr_fpr, lr_tpr)
+        gb_auc = auc(gb_fpr, gb_tpr)
+        
+        # Create ROC curve visualization using Plotly
+        fig = go.Figure()
+        
+        # Add traces for each model
+        fig.add_trace(go.Scatter(
+            x=rf_fpr, y=rf_tpr,
+            name=f'Random Forest (AUC = {rf_auc:.3f})',
+            line=dict(color='blue', width=2)
+        ))
+        
+        fig.add_trace(go.Scatter(
+            x=lr_fpr, y=lr_tpr,
+            name=f'Logistic Regression (AUC = {lr_auc:.3f})',
+            line=dict(color='red', width=2)
+        ))
+        
+        fig.add_trace(go.Scatter(
+            x=gb_fpr, y=gb_tpr,
+            name=f'Gradient Boosting (AUC = {gb_auc:.3f})',
+            line=dict(color='green', width=2)
+        ))
+        
+        # Add diagonal line representing random guessing
+        fig.add_trace(go.Scatter(
+            x=[0, 1], y=[0, 1],
+            name='Random Guessing',
+            line=dict(color='grey', width=2, dash='dash')
+        ))
+        
+        # Update layout
+        fig.update_layout(
+            title=f'ROC Curve Comparison (Threshold = {stress_threshold})',
+            xaxis=dict(title='False Positive Rate'),
+            yaxis=dict(title='True Positive Rate'),
+            legend=dict(x=0.01, y=0.99, bgcolor='rgba(255,255,255,0.8)'),
+            height=500,
+            margin=dict(l=20, r=20, t=40, b=20)
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Explanation of the ROC curve
+        st.info("""
+            **Understanding the ROC Curve:**
+            - The diagonal line represents random guessing (AUC = 0.5)
+            - A model with perfect classification would have a curve that passes through the top-left corner (AUC = 1.0)
+            - Higher AUC values indicate better model performance
+            - Different models can be compared by their AUC scores
+            - The threshold slider allows you to define what constitutes "high stress" for binary classification
+        """)
 
     with tab3:
         st.subheader("Stress Level Predictor")
@@ -357,32 +463,47 @@ def show():
 
         if prediction >= 7:
             st.markdown("""
-                ### High Stress Level Detected
+                ### High Stress Level Alert
 
-                Consider the following stress-reduction strategies:
-                - **Consult with HR or management** about workload adjustments
-                - **Prioritize self-care** including adequate sleep and regular exercise
-                - **Consider professional support** such as counseling or stress management programs
-                - **Set clear boundaries** between work and personal life
+                Immediate actions recommended:
+                - **Schedule an urgent meeting** with your supervisor to discuss workload reallocation
+                - **Take immediate steps** to reduce overtime hours
+                - **Book a consultation** with workplace counselor or stress management expert
+                - **Consider using available mental health leave**
+                - **Implement strict work-life boundaries** including no work emails after hours
+            """)
+        elif prediction >= 5:
+            st.markdown("""
+                ### Elevated Stress Level Warning
+
+                Proactive steps to consider:
+                - **Review and restructure** your daily work schedule
+                - **Start a stress journal** to identify major stressors
+                - **Practice mindfulness** for 15 minutes during work breaks
+                - **Set up regular check-ins** with your manager
+                - **Join workplace wellness programs** if available
             """)
         elif prediction >= 3:
             st.markdown("""
-                ### Moderate Stress Level Detected
+                ### Moderate Stress Level Notice
 
-                Consider these preventive measures:
-                - **Review your work-life balance** and make necessary adjustments
-                - **Implement stress management techniques** like meditation or deep breathing
-                - **Take regular breaks** during work hours
-                - **Engage in regular physical activity**
+                Preventive measures to maintain:
+                - **Optimize your work environment** for better focus
+                - **Schedule regular breaks** during intense work periods
+                - **Build a support network** among colleagues
+                - **Practice time management** techniques
+                - **Maintain regular exercise** routine
             """)
         else:
             st.markdown("""
-                ### Low Stress Level Detected
+                ### Healthy Stress Level
 
-                Maintain your well-being with these practices:
-                - **Continue your current healthy practices**
-                - **Regularly assess your stress levels** to catch any increases early
-                - **Share effective strategies** with colleagues who may be experiencing higher stress
+                Sustaining practices:
+                - **Document your effective strategies** for future reference
+                - **Mentor others** in stress management
+                - **Continue balanced workload** practices
+                - **Maintain your current exercise and sleep routine**
+                - **Schedule regular career development** discussions
             """)
 
         # Offer a way to analyze what factors would most reduce stress

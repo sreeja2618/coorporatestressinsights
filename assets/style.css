@@ -1,50 +1,43 @@
 
-/* Main Container */
 .main .block-container {
     padding-top: 2rem;
     padding-bottom: 2rem;
     max-width: 1200px;
     margin: 0 auto;
 }
-
-/* Background gradient */
 .stApp {
-    background: linear-gradient(to bottom, #f8fafc, #e2e8f0);
+    background: linear-gradient(to bottom, #fdf6f0, #e7eaf6);
 }
-
-/* Headers */
 h1 {
-    color: #1a365d;
+    color: #5d3a9b;
     margin-bottom: 1.5rem;
     font-weight: 800;
-    text-shadow: 0px 1px 2px rgba(0,0,0,0.1);
-    border-bottom: 2px solid #2c5282;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+    border-bottom: 2px solid #a685e2;
     padding-bottom: 0.5rem;
 }
 
 h2 {
-    color: #2a4365;
+    color: #875fc0;
     margin-top: 2rem;
     margin-bottom: 1rem;
     font-weight: 700;
-    border-left: 4px solid #2c5282;
+    border-left: 4px solid #a685e2;
     padding-left: 0.75rem;
 }
 
 h3 {
-    color: #2c5282;
+    color: #a685e2;
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
     font-weight: 600;
 }
-
-/* Metrics */
 div[data-testid="stMetric"] {
-    background: linear-gradient(135deg, #f7fafc, #edf2f7);
+    background: linear-gradient(135deg, #faf5ff, #e9d8fd);
     padding: 1.25rem;
     border-radius: 0.75rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #2c5282;
+    border-left: 4px solid #a685e2;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -58,25 +51,23 @@ div[data-testid="stMetricLabel"] {
     text-transform: uppercase;
     font-size: 0.85rem;
     letter-spacing: 0.05em;
-    color: #4a5568;
+    color: #6b7280;
 }
 
 div[data-testid="stMetricValue"] {
     font-size: 2rem !important;
     font-weight: 800;
-    color: #1a365d;
-    text-shadow: 0px 1px 2px rgba(0,0,0,0.1);
+    color: #5d3a9b;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
 }
-
-/* Custom navbar styling */
 .navbar-container {
     display: flex;
     justify-content: space-around;
     padding: 12px;
-    background: linear-gradient(90deg, #1a365d, #2c5282);
+    background: linear-gradient(90deg, #875fc0, #a685e2);
     border-radius: 12px;
     margin-bottom: 24px;
-    box-shadow: 0 4px 12px rgba(44, 82, 130, 0.3);
+    box-shadow: 0 4px 12px rgba(135, 95, 192, 0.3);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -90,7 +81,7 @@ div[data-testid="stMetricValue"] {
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
-    text-shadow: 0px 1px 2px rgba(0,0,0,0.2);
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden;
 }
@@ -102,23 +93,10 @@ div[data-testid="stMetricValue"] {
 
 .nav-item.active {
     background-color: white;
-    color: #1a365d;
+    color: #5d3a9b;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     text-shadow: none;
 }
-
-.nav-item.active::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 25%;
-    width: 50%;
-    height: 3px;
-    background-color: #2c5282;
-    border-radius: 3px;
-}
-
-/* Charts */
 .stPlotlyChart {
     margin-top: 1.5rem;
     margin-bottom: 2.5rem;
@@ -133,85 +111,46 @@ div[data-testid="stMetricValue"] {
     transform: scale(1.01);
 }
 
-/* Info boxes */
+
 div[data-testid="stInfo"] {
-    border-left-color: #2c5282 !important;
-    background-color: #ebf8ff !important;
+    border-left-color: #a685e2 !important;
+    background-color: #f3e8ff !important;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(44, 82, 130, 0.1);
+    box-shadow: 0 2px 8px rgba(135, 95, 192, 0.1);
     padding: 1rem !important;
 }
-
-/* Warning boxes */
 div[data-testid="stWarning"] {
-    border-left-color: #c05621 !important;
-    background-color: #fffaf0 !important;
+    border-left-color: #e09f3e !important;
+    background-color: #fff7e0 !important;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(192, 86, 33, 0.1);
+    box-shadow: 0 2px 8px rgba(224, 159, 62, 0.1);
     padding: 1rem !important;
 }
-
-/* Error boxes */
 div[data-testid="stError"] {
-    border-left-color: #c53030 !important;
-    background-color: #fff5f5 !important;
+    border-left-color: #d72638 !important;
+    background-color: #ffebeb !important;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(197, 48, 48, 0.1);
+    box-shadow: 0 2px 8px rgba(215, 38, 56, 0.1);
     padding: 1rem !important;
 }
-
-/* Expander */
 .streamlit-expanderHeader {
     font-weight: 600;
-    color: #1a365d;
-    background-color: #f7fafc;
+    color: #5d3a9b;
+    background-color: #faf5ff;
     border-radius: 8px;
     padding: 0.75rem !important;
     border: none !important;
 }
 
 .streamlit-expanderHeader:hover {
-    background-color: #edf2f7;
+    background-color: #e9d8fd;
 }
 
-.streamlit-expanderContent {
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 0 0 8px 8px !important;
-    padding: 1.25rem !important;
-}
 
-/* Filters */
-.stSelectbox label, .stMultiSelect label, .stSlider label {
-    font-weight: 600;
-    color: #1a365d;
-    text-transform: uppercase;
-    font-size: 0.875rem !important;
-    letter-spacing: 0.025em;
-    margin-bottom: 0.5rem !important;
-}
-
-.stSelectbox > div, .stMultiSelect > div {
-    border-radius: 8px !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Sliders */
-.stSlider > div {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-
-.stSlider div[data-baseweb="slider"] {
-    padding-top: 2rem;
-    padding-bottom: 1rem;
-}
-
-/* Buttons */
 button[kind="secondary"] {
     background-color: transparent;
-    color: #1a365d;
-    border: 1px solid #1a365d;
+    color: #5d3a9b;
+    border: 1px solid #5d3a9b;
     border-radius: 8px;
     font-weight: 600;
     padding: 0.5rem 1.25rem !important;
@@ -219,26 +158,24 @@ button[kind="secondary"] {
 }
 
 button[kind="secondary"]:hover {
-    background-color: #ebf8ff;
-    box-shadow: 0 2px 4px rgba(26, 54, 93, 0.1);
+    background-color: #f3e8ff;
+    box-shadow: 0 2px 4px rgba(93, 58, 155, 0.1);
 }
 
 button[kind="primary"] {
-    background-color: #1a365d;
+    background-color: #5d3a9b;
     border-radius: 8px;
     font-weight: 600;
     padding: 0.5rem 1.25rem !important;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(26, 54, 93, 0.2);
+    box-shadow: 0 2px 4px rgba(93, 58, 155, 0.2);
 }
 
 button[kind="primary"]:hover {
-    background-color: #2a4365;
-    box-shadow: 0 4px 8px rgba(26, 54, 93, 0.3);
+    background-color: #875fc0;
+    box-shadow: 0 4px 8px rgba(93, 58, 155, 0.3);
     transform: translateY(-1px);
 }
-
-/* Tables */
 .stDataFrame {
     margin-top: 1.5rem;
     border-radius: 12px;
@@ -247,34 +184,29 @@ button[kind="primary"]:hover {
 }
 
 .stDataFrame tbody tr:hover {
-    background-color: #ebf8ff !important;
+    background-color: #faf5ff !important;
 }
 
 /* File uploader */
 .stFileUploader {
     border-radius: 12px !important;
-    border: 2px dashed #2c5282 !important;
+    border: 2px dashed #a685e2 !important;
     padding: 1.5rem !important;
-    background-color: #f7fafc !important;
+    background-color: #faf5ff !important;
 }
 
 .stFileUploader:hover {
-    background-color: #ebf8ff !important;
+    background-color: #f3e8ff !important;
 }
 
 /* Tabs */
-.stTabs {
-    border-radius: 8px;
-    overflow: hidden;
-}
-
 .stTabs button[role="tab"] {
     font-weight: 600;
-    color: #1a365d;
+    color: #5d3a9b;
     padding: 0.75rem 1.25rem !important;
 }
 
 .stTabs button[role="tab"][aria-selected="true"] {
-    background-color: #ebf8ff !important;
-    border-bottom: 2px solid #2c5282 !important;
+    background-color: #f3e8ff !important;
+    border-bottom: 2px solid #a685e2 !important;
 }

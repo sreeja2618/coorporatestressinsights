@@ -4,31 +4,21 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from utils.data_processing import load_data, preprocess_data
-
-# Set page configuration
 st.set_page_config(
     page_title="Stress Factors Analysis - Corporate Stress Dashboard",
     page_icon="📈",
     layout="wide"
 )
-
-# Apply custom CSS
 with open("assets/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-# Title
 st.title("Stress Factors Analysis")
 st.markdown("Analyze key factors contributing to workplace stress and their relationships.")
-
-# Load data
 try:
     df = load_data("attached_assets/corporate_stress_dataset.csv")
     df = preprocess_data(df)
 except Exception as e:
     st.error(f"Error loading data: {e}")
     st.stop()
-
-# Define key stress factors for analysis
 work_factors = [
     'Working_Hours_per_Week', 
     'Commute_Time_Hours', 
@@ -55,8 +45,6 @@ social_factors = [
     'Gender_Bias_Experienced',
     'Discrimination_Experienced'
 ]
-
-# Sidebar filters
 st.sidebar.header("Filter Options")
 
 department_options = ["All"] + sorted(df["Department"].unique().tolist())
@@ -64,8 +52,6 @@ selected_department = st.sidebar.selectbox("Department", department_options)
 
 job_role_options = ["All"] + sorted(df["Job_Role"].unique().tolist())
 selected_job_role = st.sidebar.selectbox("Job Role", job_role_options)
-
-# Apply filters
 filtered_df = df.copy()
 
 if selected_department != "All":
@@ -73,20 +59,12 @@ if selected_department != "All":
 
 if selected_job_role != "All":
     filtered_df = filtered_df[filtered_df['Job_Role'] == selected_job_role]
-
-# Display filtered data info
 st.markdown(f"### Analyzing {len(filtered_df)} employees")
-
-# Top factors correlation with stress
 st.header("Factors Correlated with Stress Level")
-
-# Calculate correlations with Stress_Level for selected numerical columns
 numerical_cols = work_factors + ['Sleep_Hours', 'Physical_Activity_Hours_per_Week', 
                                'Annual_Leaves_Taken', 'Team_Size']
 numerical_df = filtered_df[numerical_cols + ['Stress_Level']]
 correlations = numerical_df.corr()['Stress_Level'].drop('Stress_Level').sort_values(ascending=False)
-
-# Plot correlations
 fig = px.bar(
     x=correlations.values,
     y=correlations.index,
@@ -101,18 +79,13 @@ fig.update_layout(
     height=500
 )
 st.plotly_chart(fig, use_container_width=True)
-
-# Select factor for detailed analysis
 st.header("Detailed Factor Analysis")
 selected_factor = st.selectbox(
     "Select a factor for detailed analysis", 
     options=work_factors + health_factors + ['Annual_Leaves_Taken'],
     index=0
 )
-
-# Create visualization based on factor type
 if selected_factor in numerical_cols:
-    # For numerical factors
     fig = px.scatter(
         filtered_df, 
         x=selected_factor, 
@@ -122,18 +95,12 @@ if selected_factor in numerical_cols:
         opacity=0.7,
         title=f"Relationship between {selected_factor} and Stress Level"
     )
-    
-    # Add trendline
     fig.update_traces(marker=dict(size=8))
     fig.update_layout(height=500)
-    
-    # Compute trendline
     x = filtered_df[selected_factor]
     y = filtered_df['Stress_Level']
     z = np.polyfit(x, y, 1)
     p = np.poly1d(z)
-    
-    # Add trendline to figure
     fig.add_trace(go.Scatter(
         x=sorted(x),
         y=p(sorted(x)),
@@ -143,8 +110,6 @@ if selected_factor in numerical_cols:
     ))
     
     st.plotly_chart(fig, use_container_width=True)
-    
-    # Show distribution of the factor
     fig = px.histogram(
         filtered_df, 
         x=selected_factor,
@@ -155,7 +120,6 @@ if selected_factor in numerical_cols:
     st.plotly_chart(fig, use_container_width=True)
     
 elif selected_factor == 'Health_Issues':
-    # For Health Issues (categorical)
     health_stress = filtered_df.groupby('Health_Issues')['Stress_Level'].mean().reset_index()
     health_count = filtered_df.groupby('Health_Issues').size().reset_index(name='Count')
     health_data = pd.merge(health_stress, health_count, on='Health_Issues')
@@ -173,7 +137,6 @@ elif selected_factor == 'Health_Issues':
     st.plotly_chart(fig, use_container_width=True)
     
 elif selected_factor == 'Remote_Work':
-    # For Remote Work (boolean)
     remote_stress = filtered_df.groupby('Remote_Work')['Stress_Level'].mean().reset_index()
     remote_count = filtered_df.groupby('Remote_Work').size().reset_index(name='Count')
     remote_data = pd.merge(remote_stress, remote_count, on='Remote_Work')
@@ -189,8 +152,6 @@ elif selected_factor == 'Remote_Work':
     )
     fig.update_layout(height=500)
     st.plotly_chart(fig, use_container_width=True)
-    
-    # Remote work impact across departments
     remote_dept = filtered_df.groupby(['Department', 'Remote_Work'])['Stress_Level'].mean().reset_index()
     
     fig = px.bar(
@@ -205,7 +166,6 @@ elif selected_factor == 'Remote_Work':
     st.plotly_chart(fig, use_container_width=True)
     
 elif selected_factor == 'Mental_Health_Leave_Taken':
-    # For Mental Health Leave (boolean)
     mental_stress = filtered_df.groupby('Mental_Health_Leave_Taken')['Stress_Level'].mean().reset_index()
     mental_count = filtered_df.groupby('Mental_Health_Leave_Taken').size().reset_index(name='Count')
     mental_data = pd.merge(mental_stress, mental_count, on='Mental_Health_Leave_Taken')
@@ -221,8 +181,6 @@ elif selected_factor == 'Mental_Health_Leave_Taken':
     )
     fig.update_layout(height=500)
     st.plotly_chart(fig, use_container_width=True)
-    
-    # Mental health leave impact across departments
     mental_dept = filtered_df.groupby(['Department', 'Mental_Health_Leave_Taken'])['Stress_Level'].mean().reset_index()
     
     fig = px.bar(
@@ -237,7 +195,6 @@ elif selected_factor == 'Mental_Health_Leave_Taken':
     st.plotly_chart(fig, use_container_width=True)
     
 elif selected_factor == 'Burnout_Symptoms':
-    # For Burnout Symptoms (categorical)
     burnout_stress = filtered_df.groupby('Burnout_Symptoms')['Stress_Level'].mean().reset_index()
     burnout_count = filtered_df.groupby('Burnout_Symptoms').size().reset_index(name='Count')
     burnout_data = pd.merge(burnout_stress, burnout_count, on='Burnout_Symptoms')
@@ -253,8 +210,6 @@ elif selected_factor == 'Burnout_Symptoms':
     )
     fig.update_layout(height=500)
     st.plotly_chart(fig, use_container_width=True)
-
-# Working Hours Analysis
 st.header("Working Hours Impact")
 hours_bins = [30, 40, 50, 60, 70, 80, 90]
 filtered_df['Hours_Group'] = pd.cut(filtered_df['Working_Hours_per_Week'], bins=hours_bins, labels=['30-40', '40-50', '50-60', '60-70', '70-80', '80-90'])
@@ -274,8 +229,6 @@ fig = px.bar(
 )
 fig.update_layout(height=500)
 st.plotly_chart(fig, use_container_width=True)
-
-# Download the filtered data
 st.sidebar.header("Export Data")
 csv = filtered_df.to_csv(index=False)
 st.sidebar.download_button(

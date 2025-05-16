@@ -5,34 +5,23 @@ import plotly.express as px
 import plotly.graph_objects as go
 from utils.data_processing import load_data, preprocess_data
 from utils.navbar import create_navbar
-
-# Set page configuration
 st.set_page_config(
     page_title="Demographics Analysis - Corporate Stress Dashboard",
     page_icon="👥",
     layout="wide"
 )
 
-# Apply custom CSS
 with open("assets/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-# Display the navbar
 create_navbar()
-
-# Title
 st.title("Demographics Analysis")
 st.markdown("Explore how stress levels vary across different demographic groups in the organization.")
-
-# Load data
 try:
     df = load_data("attached_assets/corporate_stress_dataset.csv")
     df = preprocess_data(df)
 except Exception as e:
     st.error(f"Error loading data: {e}")
     st.stop()
-
-# Demographic filters
 st.sidebar.header("Demographic Filters")
 
 age_min = int(df['Age'].min())
@@ -50,11 +39,7 @@ selected_company_size = st.sidebar.multiselect("Company Size", company_size_opti
 
 location_options = ["All"] + sorted(df["Location"].unique().tolist())
 selected_location = st.sidebar.multiselect("Location", location_options, default=["All"])
-
-# Filter data based on selections
 filtered_df = df.copy()
-
-# Apply filters
 filtered_df = filtered_df[(filtered_df['Age'] >= age_range[0]) & (filtered_df['Age'] <= age_range[1])]
 
 if "All" not in selected_gender:
@@ -68,11 +53,7 @@ if "All" not in selected_company_size:
 
 if "All" not in selected_location:
     filtered_df = filtered_df[filtered_df['Location'].isin(selected_location)]
-
-# Display filtered data info
 st.markdown(f"### Analyzing {len(filtered_df)} employees")
-
-# Age distribution and stress analysis
 st.header("Age Demographics")
 col1, col2 = st.columns(2)
 
@@ -105,8 +86,6 @@ with col2:
     )
     fig.update_layout(height=400)
     st.plotly_chart(fig, use_container_width=True)
-
-# Gender analysis
 st.header("Gender Analysis")
 col1, col2 = st.columns(2)
 
@@ -136,8 +115,6 @@ with col2:
     )
     fig.update_layout(height=400)
     st.plotly_chart(fig, use_container_width=True)
-
-# Marital Status analysis
 st.header("Marital Status Analysis")
 col1, col2 = st.columns(2)
 
@@ -168,8 +145,6 @@ with col2:
     )
     fig.update_layout(height=400)
     st.plotly_chart(fig, use_container_width=True)
-
-# Location analysis
 st.header("Location Analysis")
 
 location_stress = filtered_df.groupby('Location')['Stress_Level'].mean().reset_index()
@@ -185,8 +160,6 @@ fig = px.bar(
 )
 fig.update_layout(xaxis_title="Location", yaxis_title="Average Stress Level")
 st.plotly_chart(fig, use_container_width=True)
-
-# Gender bias experience by gender
 st.header("Discrimination & Bias Analysis")
 col1, col2 = st.columns(2)
 
@@ -217,8 +190,6 @@ with col2:
     )
     fig.update_layout(xaxis_title="Gender", yaxis_title="Count", height=400)
     st.plotly_chart(fig, use_container_width=True)
-
-# Download the filtered data
 st.sidebar.header("Export Data")
 csv = filtered_df.to_csv(index=False)
 st.sidebar.download_button(

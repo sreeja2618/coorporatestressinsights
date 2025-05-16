@@ -8,23 +8,20 @@ from utils.navbar import create_navbar
 
 def show():
     """Display the demographics analysis page content"""
-    # Apply custom CSS
     with open("assets/style.css") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     
-    # Title
+   
     st.title("Demographics Analysis")
     st.markdown("Explore how stress levels vary across different demographic groups in the organization.")
     
-    # Load data
+   
     try:
         df = load_data("attached_assets/corporate_stress_dataset.csv")
         df = preprocess_data(df)
     except Exception as e:
         st.error(f"Error loading data: {e}")
         st.stop()
-    
-    # Age distribution and stress analysis
     st.header("Age Demographics")
     col1, col2 = st.columns(2)
     
@@ -57,8 +54,6 @@ def show():
         )
         fig.update_layout(height=400)
         st.plotly_chart(fig, use_container_width=True)
-    
-    # Gender analysis
     st.header("Gender Analysis")
     col1, col2 = st.columns(2)
     
